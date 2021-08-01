@@ -1,28 +1,24 @@
 package santiago.academy.flickr;
 
 import android.os.Bundle;
-
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.view.View;
+import android.util.Log;
 
 import santiago.academy.flickr.databinding.ActivitySearchBinding;
 
-public class SearchActivity extends AppCompatActivity {
-
+public class SearchActivity extends BaseActivity {
+    private static final String TAG = "SearchActivity";
     private ActivitySearchBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "onCreate starts");
         super.onCreate(savedInstanceState);
-
         binding = ActivitySearchBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        setSupportActionBar(binding.toolbar);
+        activateToolbar$Flickr_app(true);
 
+        Log.d(TAG, "onCreate ends");
     }
 
 }

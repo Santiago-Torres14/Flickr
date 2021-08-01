@@ -35,7 +35,7 @@ public class FlickrRecyclerViewAdapter extends RecyclerView.Adapter<FlickrRecycl
     public void onBindViewHolder(@NonNull FlickrImageViewHolder holder, int position) {
         // called by the layout manager when it wants new data in an existing view
         Photo photoItem = photoList.get(position);
-        Log.d(TAG, "onBindViewHolder: "+photoItem+" --> "+position);
+//        Log.d(TAG, "onBindViewHolder: "+photoItem+" --> "+position);
         Picasso.get().load(photoItem.getImage()).error(R.drawable.placeholder).placeholder(R.drawable.placeholder).into(holder.thumbnail);
         holder.title.setText(photoItem.getTitle());
     }
@@ -51,7 +51,7 @@ public class FlickrRecyclerViewAdapter extends RecyclerView.Adapter<FlickrRecycl
 
     @Override
     public int getItemCount() {
-        Log.d(TAG, "getItemCount called");
+//        Log.d(TAG, "getItemCount called");
         return photoList.isEmpty() ? 0 : photoList.size();
     }
 
@@ -63,6 +63,14 @@ public class FlickrRecyclerViewAdapter extends RecyclerView.Adapter<FlickrRecycl
             super(itemView);
             thumbnail = itemView.findViewById(R.id.thumbnail);
             title = itemView.findViewById(R.id.element_title);
+        }
+
+        public TextView getTitle(){
+            return this.title;
+        }
+
+        public ImageView getThumbnail(){
+            return this.thumbnail;
         }
     }
 }

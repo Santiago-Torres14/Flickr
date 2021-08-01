@@ -1,13 +1,15 @@
 package santiago.academy.flickr
 
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import santiago.academy.flickr.databinding.ActivityMainBinding
@@ -15,7 +17,8 @@ import java.lang.Exception
 
 private const val TAG = "MainActivity"
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity(), RecycleItemClickListener.OnRecyclerClickListener,
+    GetRawData.OnDownloadCompleted, GetFlickrJsonData.OnDataAvailable {
 
     private val flickrRecyclerViewAdapter = FlickrRecyclerViewAdapter(ArrayList())
     private lateinit var activityMainBinding: ActivityMainBinding
@@ -27,39 +30,23 @@ class MainActivity : AppCompatActivity() {
         activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
         val rootView = activityMainBinding.root
         setContentView(rootView)
-        setSupportActionBar(activityMainBinding.toolbar)
-        var recyclerView = activityMainBinding.constraintLayout.recyclerviewMain
+
+        activateToolbar(false)
+
+        val recyclerView = activityMainBinding.ConstraintLayout.recyclerviewMain
         recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.addOnItemTouchListener(RecycleItemClickListener(this, recyclerView, this))
         recyclerView.adapter = flickrRecyclerViewAdapter
 
         // format the URL to filter search and set language
-        val url = createUri("https://www.flickr.com/services/feeds/photos_public.gne", "sunset", "en-us", true)
+        val url = createUri(
+            "https://www.flickr.com/services/feeds/photos_public.gne",
+            "sunset",
+            "en-us",
+            true
+        )
         // Calls Async function to retrieve the data from the URL
-        val getRawData = GetRawData((object : GetRawData.OnDownloadCompleted {
-            override fun onDownloadCompleted(data: String, status: DownloadStatus) {
-                if (status == DownloadStatus.OK) {
-                    Log.d(TAG, "onDownloadCompleted called, data is $data")
-
-                    // parse the JSON data retrieve from getRawData
-                    val getFlickrJsonData = GetFlickrJsonData(object : GetFlickrJsonData.OnDataAvailable {
-                        override fun onDataAvailable(data: List<Photo>) {
-                            Log.d(TAG, "onDataAvailable called")
-                            flickrRecyclerViewAdapter.loadNewData(data)
-                            Log.d(TAG, "onDataAvailable ends")
-                        }
-
-                        override fun onError(exception: Exception) {
-                            Log.e(TAG, "onError called, exception $exception")
-                        }
-                    })
-                    getFlickrJsonData.execute(data)
-                } else {
-
-
-                    Log.d(TAG, "onDownloadCompleted failed with status $status. Error message is: $data ")
-                }
-            }
-        }))
+        val getRawData = GetRawData(this)
 
         getRawData.execute(url)
 
@@ -72,16 +59,50 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun createUri(baseUrl: String, searchCriteria: String, lang: String, matchAll: Boolean): String {
+    override fun onItemClicked(view: View, position: Int) {
+        Log.d(TAG, "onItemClicked called")
+        Toast.makeText(this, "Normal tap at position $position", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onItemLongClick(view: View, position: Int) {
+        Log.d(TAG, "onItemLongClick called")
+        Toast.makeText(this, "Long tap at position $position", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onDownloadCompleted(data: String, status: DownloadStatus) {
+        if (status == DownloadStatus.OK) {
+            Log.d(TAG, "onDownloadCompleted called, data is $data")
+
+            // parse the JSON data retrieve from getRawData
+            val getFlickrJsonData = GetFlickrJsonData(this)
+            getFlickrJsonData.execute(data)
+        } else {
+            Log.d(TAG, "onDownloadCompleted failed with status $status. Error message is: $data ")
+        }
+    }
+
+    override fun onDataAvailable(data: List<Photo>) {
+        Log.d(TAG, "onDataAvailable called")
+        flickrRecyclerViewAdapter.loadNewData(data)
+        Log.d(TAG, "onDataAvailable ends")
+    }
+
+    override fun onError(exception: Exception) {
+        Log.e(TAG, "onError called, exception $exception")
+    }
+
+    private fun createUri(
+        baseUrl: String,
+        searchCriteria: String,
+        lang: String,
+        matchAll: Boolean
+    ): String {
         Log.d(TAG, "createUri starts")
 
-        return Uri.parse(baseUrl).buildUpon().
-            appendQueryParameter("tags", searchCriteria).
-            appendQueryParameter("tagmode", if (matchAll) "ALL" else "ANY").
-            appendQueryParameter("lang", lang).
-            appendQueryParameter("format", "json").
-            appendQueryParameter("nojsoncallback", "1").
-            build().toString()
+        return Uri.parse(baseUrl).buildUpon().appendQueryParameter("tags", searchCriteria)
+            .appendQueryParameter("tagmode", if (matchAll) "ALL" else "ANY")
+            .appendQueryParameter("lang", lang).appendQueryParameter("format", "json")
+            .appendQueryParameter("nojsoncallback", "1").build().toString()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

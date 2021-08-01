@@ -9,7 +9,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import santiago.academy.flickr.databinding.ActivityPhotoDetailsBinding
 
-class PhotoDetailsActivity : AppCompatActivity() {
+class PhotoDetailsActivity : BaseActivity() {
 
     private lateinit var binding: ActivityPhotoDetailsBinding
 
@@ -19,12 +19,8 @@ class PhotoDetailsActivity : AppCompatActivity() {
         binding = ActivityPhotoDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setSupportActionBar(binding.toolbar)
+        activateToolbar(true)
 
-        binding.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
     }
 
 }
