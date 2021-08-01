@@ -16,7 +16,7 @@ public class SearchActivity extends BaseActivity {
         binding = ActivitySearchBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        activateToolbar$Flickr_app(true);
+        activateToolbar(this, true);
 
         Log.d(TAG, "onCreate ends");
     }

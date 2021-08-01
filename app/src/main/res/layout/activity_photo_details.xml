@@ -20,6 +20,7 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_photo_details" />
+    <include layout="@layout/content_photo_details"
+        android:id="@+id/Constraint_layout"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

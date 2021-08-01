@@ -1,5 +1,6 @@
 package santiago.academy.flickr
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -31,7 +32,7 @@ class MainActivity : BaseActivity(), RecycleItemClickListener.OnRecyclerClickLis
         val rootView = activityMainBinding.root
         setContentView(rootView)
 
-        activateToolbar(false)
+        activateToolbar(this, false)
 
         val recyclerView = activityMainBinding.ConstraintLayout.recyclerviewMain
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -66,7 +67,13 @@ class MainActivity : BaseActivity(), RecycleItemClickListener.OnRecyclerClickLis
 
     override fun onItemLongClick(view: View, position: Int) {
         Log.d(TAG, "onItemLongClick called")
-        Toast.makeText(this, "Long tap at position $position", Toast.LENGTH_SHORT).show()
+//        Toast.makeText(this, "Long tap at position $position", Toast.LENGTH_SHORT).show()
+        val photo = flickrRecyclerViewAdapter.getPhoto(position)
+        if (photo != null) {
+            val intent = Intent(this, PhotoDetailsActivity::class.java)
+            intent.putExtra(PHOTO_TRANSFER, photo)
+            startActivity(intent)
+        }
     }
 
     override fun onDownloadCompleted(data: String, status: DownloadStatus) {
