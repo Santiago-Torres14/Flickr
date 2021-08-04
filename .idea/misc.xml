@@ -8,6 +8,8 @@
         <entry key="..\:/Projects/Kotlin/flickr/app/src/main/res/layout/activity_search.xml" value="0.5" />
         <entry key="..\:/Projects/Kotlin/flickr/app/src/main/res/layout/content_photo_details.xml" value="0.33" />
         <entry key="..\:/Projects/Kotlin/flickr/app/src/main/res/layout/main_content.xml" value="0.36685773840541946" />
+        <entry key="..\:/Projects/Kotlin/flickr/app/src/main/res/menu/main_menu.xml" value="0.9572815533980582" />
+        <entry key="..\:/Projects/Kotlin/flickr/app/src/main/res/menu/menu_search.xml" value="0.9572815533980582" />
       </map>
     </option>
   </component>

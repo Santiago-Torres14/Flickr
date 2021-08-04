@@ -1,6 +1,7 @@
 package santiago.academy.flickr
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -10,11 +11,12 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import santiago.academy.flickr.databinding.ActivityMainBinding
 import java.lang.Exception
+import androidx.preference.PreferenceManager
+
 
 private const val TAG = "MainActivity"
 
@@ -38,18 +40,6 @@ class MainActivity : BaseActivity(), RecycleItemClickListener.OnRecyclerClickLis
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.addOnItemTouchListener(RecycleItemClickListener(this, recyclerView, this))
         recyclerView.adapter = flickrRecyclerViewAdapter
-
-        // format the URL to filter search and set language
-        val url = createUri(
-            "https://www.flickr.com/services/feeds/photos_public.gne",
-            "sunset",
-            "en-us",
-            true
-        )
-        // Calls Async function to retrieve the data from the URL
-        val getRawData = GetRawData(this)
-
-        getRawData.execute(url)
 
         // assign the floating action button
         fab = activityMainBinding.fab
@@ -120,14 +110,31 @@ class MainActivity : BaseActivity(), RecycleItemClickListener.OnRecyclerClickLis
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.moreInformation -> {
-                true
-            }
-            R.id.help -> {
-                true
+            R.id.search -> {
+                startActivity(Intent(this, SearchActivity::class.java))
+                return true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
+    override fun onResume() {
+        Log.d(TAG, "onResume")
+        super.onResume()
+        val sharedPref = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        val queryResult = sharedPref.getString(FLICKR_QUERY, "")
+        if (queryResult?.isNotEmpty() == true){
+            // format the URL to filter search and set language
+            val url = createUri(
+                "https://www.flickr.com/services/feeds/photos_public.gne",
+                queryResult,
+                "en-us",
+                true
+            )
+            // Calls Async function to retrieve the data from the URL
+            val getRawData = GetRawData(this)
+
+            getRawData.execute(url)
+        }
+    }
 }

@@ -2,9 +2,7 @@ package santiago.academy.flickr;
 
 
 import android.app.Activity;
-import android.content.Context;
 import android.util.Log;
-import android.view.View;
 import androidx.appcompat.widget.Toolbar;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,7 +15,7 @@ public class BaseActivity extends AppCompatActivity {
 
     public void activateToolbar(Activity activity, Boolean enableHome) {
         Log.d(TAG, "activateToolbar Called");
-        Toolbar toolbar = (Toolbar) activity.findViewById(R.id.toolbar);
+        Toolbar toolbar = activity.findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(enableHome);
     }

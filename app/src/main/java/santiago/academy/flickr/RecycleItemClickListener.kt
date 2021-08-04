@@ -18,7 +18,7 @@ class RecycleItemClickListener(context: Context, recycleView: RecyclerView, priv
         fun onItemLongClick(view: View, position: Int)
     }
 
-    // ass the gesture detector
+    // create the gesture detector to get the click from the the view
     private val gestureDetector = GestureDetectorCompat(context, object : GestureDetector.SimpleOnGestureListener(){
         override fun onSingleTapUp(e: MotionEvent?): Boolean {
             val childView = e?.let { recycleView.findChildViewUnder(it.x, e.y) }
